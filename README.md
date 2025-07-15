@@ -8,6 +8,7 @@ This repository provides a small website modernizing the SHMMy forum experience.
 - Dark mode toggle
 - Live announcements fetched from [ECE](https://www.ece.ntua.gr/gr/announcements)
 - Past papers page serving local PDF files
+- Simple registration page to create an account
 - Contact form placeholder
 
 ## Getting Started
@@ -17,3 +18,4 @@ This repository provides a small website modernizing the SHMMy forum experience.
 3. (Optional) Run `npm run fetch-papers` to download PDFs from the HMMY forum.
 4. Visit `http://localhost:3000` in a browser.
 5. Browse `/pastpapers.html` to view downloadable past papers.
+6. Visit `/register.html` to create an account.
