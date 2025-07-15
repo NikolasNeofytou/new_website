@@ -1,14 +1,16 @@
 # SHMMy Forum Enhancements
 
-This repository provides a simple static website modernizing the SHMMy forum experience. It uses Bootstrap for responsive design and a small script for dark mode.
+This repository provides a small website modernizing the SHMMy forum experience. It now includes a Node.js server that fetches live announcements from the School of Electrical and Computer Engineering.
 
 ## Features
 
 - Responsive layout built on Bootstrap 5
 - Dark mode toggle
-- Example announcements section
+- Live announcements fetched from [ECE](https://www.ece.ntua.gr/gr/announcements)
 - Contact form placeholder
 
 ## Getting Started
 
-Open `index.html` in a web browser. No build step is required.
+1. Install dependencies with `npm install`.
+2. Start the server using `node server.js`.
+3. Visit `http://localhost:3000` in a browser.
