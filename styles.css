@@ -1,0 +1,21 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+#hero {
+    background: linear-gradient(135deg, #007bff, #6610f2);
+    color: white;
+}
+
+.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.dark-mode .bg-light {
+    background-color: #1e1e1e !important;
+}
+
+.dark-mode .bg-primary {
+    background-color: #273a7a !important;
+}
