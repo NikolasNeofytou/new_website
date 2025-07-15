@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
+const { run: syncPapers } = require('./fetchPapers');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +32,8 @@ app.get('/api/announcements', async (_req, res) => {
 });
 
 const PAPERS_DIR = path.join(__dirname, 'papers');
+// fetch latest PDFs from the forum on startup
+syncPapers().catch(err => console.error('Failed to sync papers:', err));
 
 app.get('/api/pastpapers', async (_req, res) => {
   try {

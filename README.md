@@ -14,6 +14,6 @@ This repository provides a small website modernizing the SHMMy forum experience.
 
 1. Install dependencies with `npm install`.
 2. Start the server using `node server.js`.
-3. Visit `http://localhost:3000` in a browser.
-4. Place PDF exam files in the `papers/` directory.
+3. (Optional) Run `npm run fetch-papers` to download PDFs from the HMMY forum.
+4. Visit `http://localhost:3000` in a browser.
 5. Browse `/pastpapers.html` to view downloadable past papers.
