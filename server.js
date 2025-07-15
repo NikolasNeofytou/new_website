@@ -1,6 +1,7 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
+const fs = require('fs');
 const path = require('path');
 
 const app = express();
@@ -29,24 +30,21 @@ app.get('/api/announcements', async (_req, res) => {
   }
 });
 
+const PAPERS_DIR = path.join(__dirname, 'papers');
+
 app.get('/api/pastpapers', async (_req, res) => {
   try {
-    const response = await fetch('https://shmmy.ntua.gr/forum/viewforum.php?f=411');
-    const html = await response.text();
-    const $ = cheerio.load(html);
-    const papers = [];
-    $('a.forumtitle').each((_, el) => {
-      const title = $(el).text().trim();
-      let url = $(el).attr('href');
-      if (url && !url.startsWith('http')) {
-        url = 'https://shmmy.ntua.gr/forum/' + url.replace(/^\.\//, '');
-      }
-      papers.push({ title, url });
-    });
+    const files = await fs.promises.readdir(PAPERS_DIR);
+    const papers = files
+      .filter(f => f.toLowerCase().endsWith('.pdf'))
+      .map(f => ({
+        title: f.replace(/_/g, ' ').replace(/\.pdf$/i, ''),
+        url: `/papers/${encodeURIComponent(f)}`,
+      }));
     res.json(papers);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to fetch past papers' });
+    res.status(500).json({ error: 'Failed to load past papers' });
   }
 });
 
