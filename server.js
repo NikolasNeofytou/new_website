@@ -4,7 +4,6 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
 const { run: syncPapers } = require('./fetchPapers');
-const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,7 +33,6 @@ app.get('/api/announcements', async (_req, res) => {
 });
 
 const PAPERS_DIR = path.join(__dirname, 'papers');
-const USERS_FILE = path.join(__dirname, 'users.json');
 // fetch latest PDFs from the forum on startup
 syncPapers().catch(err => console.error('Failed to sync papers:', err));
 
@@ -54,33 +52,5 @@ app.get('/api/pastpapers', async (_req, res) => {
   }
 });
 
-app.post('/api/register', async (req, res) => {
-  const { username, universityId, password } = req.body || {};
-  if (!username || !universityId || !password) {
-    return res.status(400).json({ error: 'All fields required' });
-  }
-  let users = [];
-  try {
-    const data = await fs.promises.readFile(USERS_FILE, 'utf8');
-    users = JSON.parse(data);
-  } catch (err) {
-    if (err.code !== 'ENOENT') {
-      console.error(err);
-      return res.status(500).json({ error: 'Server error' });
-    }
-  }
-  if (users.find(u => u.universityId === universityId)) {
-    return res.status(409).json({ error: 'User already exists' });
-  }
-  const hashed = crypto.createHash('sha256').update(password).digest('hex');
-  users.push({ username, universityId, password: hashed });
-  try {
-    await fs.promises.writeFile(USERS_FILE, JSON.stringify(users, null, 2));
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Failed to save user' });
-  }
-  res.json({ success: true });
-});
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

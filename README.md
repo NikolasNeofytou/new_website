@@ -6,9 +6,10 @@ This repository provides a small website modernizing the SHMMy forum experience.
 
 - Responsive layout built on Bootstrap 5
 - Dark mode toggle
+- Animated background for a lively feel
 - Live announcements fetched from [ECE](https://www.ece.ntua.gr/gr/announcements)
 - Past papers page serving local PDF files
-- Simple registration page to create an account
+- Login page redirects to NTUA's single sign-on service
 - Contact form placeholder
 
 ## Getting Started
@@ -18,4 +19,4 @@ This repository provides a small website modernizing the SHMMy forum experience.
 3. (Optional) Run `npm run fetch-papers` to download PDFs from the HMMY forum.
 4. Visit `http://localhost:3000` in a browser.
 5. Browse `/pastpapers.html` to view downloadable past papers.
-6. Visit `/register.html` to create an account.
+6. Visit `/register.html` to log in via NTUA.

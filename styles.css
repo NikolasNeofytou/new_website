@@ -1,10 +1,22 @@
 body {
     font-family: Arial, sans-serif;
+    background: linear-gradient(45deg, #f0f8ff, #ffe4e1, #e6e6fa);
+    background-size: 600% 600%;
+    animation: gradientMove 15s ease infinite;
+}
+
+@keyframes gradientMove {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
 }
 
 #hero {
-    background: linear-gradient(135deg, #007bff, #6610f2);
     color: white;
+}
+
+.hero-bg {
+    background: linear-gradient(135deg, #007bff, #6610f2);
 }
 
 .dark-mode {
@@ -18,4 +30,13 @@ body {
 
 .dark-mode .bg-primary {
     background-color: #273a7a !important;
+}
+
+section {
+    animation: fadeIn 0.6s ease both;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
