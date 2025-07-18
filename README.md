@@ -11,7 +11,7 @@ This repository provides a small website modernizing the SHMMy forum experience.
 - Past papers page serving local PDF files
 - Login via verified LinkedIn or IEEE membership
 - Lab partners board for finding teammates
-- Student profiles with university ID, year and specialization
+- Student profiles with university ID, dropdown year and specialization, and photo upload with electrical engineering themed defaults
 - Contact form placeholder
 
 ## Getting Started
