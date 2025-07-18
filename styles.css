@@ -40,3 +40,8 @@ section {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
+.ad-banner img {
+    max-width: 100%;
+    height: auto;
+}
