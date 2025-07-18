@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Partners</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">SHMMy</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://shmmy.ntua.gr/forum/">Forum</a></li>
+                <li class="nav-item"><a class="nav-link" href="pastpapers.html">Past Papers</a></li>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Lab Partners</a></li>
+                <li class="nav-item"><a class="nav-link" href="profiles.html">Profiles</a></li>
+                <li class="nav-item"><a class="nav-link" href="register.html">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="mb-4">Find a Lab Partner</h2>
+        <form id="partner-form" class="mb-5">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="course" class="form-label">Course</label>
+                    <input type="text" class="form-control" id="course" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="teamSize" class="form-label">Team Size</label>
+                    <input type="number" class="form-control" id="teamSize" min="1" max="10" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="type" class="form-label">I'm</label>
+                    <select id="type" class="form-select" required>
+                        <option value="looking">Looking for a team</option>
+                        <option value="team">Team seeking member</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="contact" class="form-label">Contact Email</label>
+                    <input type="email" class="form-control" id="contact" required>
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </div>
+            </div>
+        </form>
+        <div id="posts" class="row g-3">
+            <!-- Posts loaded via labpartners.js -->
+        </div>
+    </div>
+</section>
+
+<footer class="py-4 bg-primary text-white text-center">
+    <div class="container">
+        <p class="mb-0">&copy; 2025 SHMMy Students</p>
+        <p class="mb-0">Created by <a href="https://example.com" class="text-white text-decoration-underline">Nikolas Neofytou</a></p>
+        <p class="mb-0">
+            <a href="https://github.com/nneof" class="text-white">GitHub</a> |
+            <a href="https://linkedin.com/in/nneof" class="text-white">LinkedIn</a> |
+            <a href="https://twitter.com/nneof" class="text-white">Twitter</a>
+        </p>
+        <button id="theme-toggle" class="btn btn-outline-light ms-2 mt-2">Toggle Dark Mode</button>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="labpartners.js"></script>
+</body>
+</html>
