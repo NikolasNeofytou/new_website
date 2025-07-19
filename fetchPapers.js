@@ -8,7 +8,9 @@ const FORUM_BOARD = '/viewforum.php?f=411'; // board that lists past papers
 const PAPERS_DIR = path.join(__dirname, 'papers');
 
 async function fetchPdfLinks() {
-  const res = await fetch(BASE_URL + FORUM_BOARD);
+  const res = await fetch(BASE_URL + FORUM_BOARD).catch(err => {
+    throw new Error('Unable to reach forum: ' + err.message);
+  });
   const html = await res.text();
   const $ = cheerio.load(html);
   const links = new Set();
@@ -43,7 +45,13 @@ async function download(link) {
 
 async function run() {
   await fs.promises.mkdir(PAPERS_DIR, { recursive: true });
-  const links = await fetchPdfLinks();
+  let links;
+  try {
+    links = await fetchPdfLinks();
+  } catch (err) {
+    console.error(err.message);
+    return;
+  }
   for (const link of links) {
     try {
       await download(link);

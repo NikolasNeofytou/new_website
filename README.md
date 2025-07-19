@@ -18,11 +18,12 @@ This repository provides a small website modernizing the SHMMy forum experience.
 
 ## Getting Started
 
-1. Install dependencies with `npm install`.
+1. Install dependencies with `npm install` (required for modules such as `bcryptjs`).
 2. Start the server using `node server.js`.
-3. (Optional) Run `npm run fetch-papers` to cache PDFs from the HMMY forum.
+3. (Optional) Run `npm run fetch-papers` to cache PDFs from the HMMY forum. This step requires network access to `shmmy.ntua.gr` and will fail if that domain is blocked.
 4. Visit `http://localhost:3000` in a browser.
 5. Browse `/pastpapers.html` to view past papers scraped from the forum.
 6. Use `/labpartners.html` to post or search for lab partners.
 7. Visit `/register.html` to sign in with LinkedIn, IEEE, or your site profile using your university ID and password.
 8. From the login page, follow the sign-up link to `/signup.html` and create a student profile with a chosen password.
+   If `npm run fetch-papers` fails, you can manually place PDFs inside the `papers/` directory so they appear on the Past Papers page.
