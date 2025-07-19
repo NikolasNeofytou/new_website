@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('profile-form');
     const photoChoice = document.getElementById('photo-choice');
     const photoUpload = document.getElementById('photo-upload');
+    const passwordInput = document.getElementById('password');
 
     const defaults = {
         default1: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%23007bff'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='60' fill='white'>⚡</text></svg>",
@@ -40,7 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
             univid: document.getElementById('univid').value.trim(),
             year: parseInt(document.getElementById('year').value, 10),
             spec: document.getElementById('spec').value,
-            photo
+            photo,
+            password: passwordInput.value
         };
 
         try {
@@ -49,6 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
+            localStorage.setItem('currentUser', JSON.stringify({
+                name: data.name,
+                univid: data.univid,
+                year: data.year,
+                spec: data.spec,
+                photo: data.photo
+            }));
+            if (window.updateUserInfo) window.updateUserInfo();
             form.reset();
             photoUpload.classList.add('d-none');
         } catch {

@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 const { fetchPdfLinks } = require('./fetchPapers');
 
 const app = express();
@@ -105,12 +106,14 @@ app.get('/api/users', async (_req, res) => {
 app.post('/api/users', async (req, res) => {
   try {
     const users = await readUsers();
+    const hashed = await bcrypt.hash(req.body.password, 10);
     users.push({
       name: req.body.name,
       univid: req.body.univid,
       year: req.body.year,
       spec: req.body.spec,
-      photo: req.body.photo
+      photo: req.body.photo,
+      password: hashed
     });
     await writeUsers(users);
     res.status(201).json({ status: 'ok' });
@@ -125,9 +128,14 @@ app.post('/api/login', async (req, res) => {
     const users = await readUsers();
     const user = users.find(u => u.univid === req.body.univid);
     if (!user) {
-      return res.status(401).json({ error: 'Invalid ID' });
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
-    res.json({ status: 'ok', user });
+    const ok = await bcrypt.compare(req.body.password || '', user.password);
+    if (!ok) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    const { password, ...clean } = user;
+    res.json({ status: 'ok', user: clean });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to log in' });
