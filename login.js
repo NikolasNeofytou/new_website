@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('currentUser', JSON.stringify(data.user));
             if (window.updateUserInfo) window.updateUserInfo();
             form.reset();
+            window.location.href = 'profile.html';
         } catch {
             msg.className = 'text-danger';
             msg.textContent = 'Invalid credentials';

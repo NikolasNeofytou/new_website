@@ -14,6 +14,7 @@ This repository provides a small website modernizing the SHMMy forum experience.
 - Student profiles via a dedicated sign-up page with university ID, dropdown year and specialization, and photo upload with electrical engineering themed defaults
 - Ad banners across pages
 - Logged-in users see their name and profile photo in the navbar
+- Profile management page built with React to edit your name, year, specialization and photo
 
 ## Getting Started
 
@@ -25,4 +26,5 @@ This repository provides a small website modernizing the SHMMy forum experience.
 6. Use `/labpartners.html` to post or search for lab partners.
 7. Visit `/register.html` to sign in with LinkedIn, IEEE, or your site profile using your university ID and password.
 8. From the login page, follow the sign-up link to `/signup.html` and create a student profile with a chosen password.
+9. After logging in, visit `/profile.html` to view or edit your information using the React interface.
    If `npm run fetch-papers` fails, you can manually place PDFs inside the `papers/` directory so they appear on the Past Papers page.

@@ -132,6 +132,35 @@ app.post('/api/users', async (req, res) => {
   }
 });
 
+app.get('/api/users/:id', async (req, res) => {
+  const users = await readUsers();
+  const user = users.find(u => u.univid === req.params.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  const { password, ...clean } = user;
+  res.json(clean);
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const users = await readUsers();
+    const idx = users.findIndex(u => u.univid === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: 'User not found' });
+    users[idx] = {
+      ...users[idx],
+      name: req.body.name ?? users[idx].name,
+      year: req.body.year ?? users[idx].year,
+      spec: req.body.spec ?? users[idx].spec,
+      photo: req.body.photo ?? users[idx].photo
+    };
+    await writeUsers(users);
+    const { password, ...clean } = users[idx];
+    res.json(clean);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
 app.post('/api/login', async (req, res) => {
   try {
     const users = await readUsers();
