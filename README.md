@@ -14,7 +14,6 @@ This repository provides a small website modernizing the SHMMy forum experience.
 - Student profiles via a dedicated sign-up page with university ID, dropdown year and specialization, and photo upload with electrical engineering themed defaults
 - Ad banners across pages
 - Logged-in users see their name and profile photo in the navbar
-- Contact form placeholder
 
 ## Getting Started
 
