@@ -53,7 +53,7 @@ async function run() {
   }
 }
 
-module.exports = { run };
+module.exports = { run, fetchPdfLinks };
 
 if (require.main === module) {
   run().catch(err => {

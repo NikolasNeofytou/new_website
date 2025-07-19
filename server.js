@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
-const { run: syncPapers } = require('./fetchPapers');
+const { fetchPdfLinks } = require('./fetchPapers');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,11 +32,8 @@ app.get('/api/announcements', async (_req, res) => {
   }
 });
 
-const PAPERS_DIR = path.join(__dirname, 'papers');
 const LAB_FILE = path.join(__dirname, 'labpartners.json');
 const USERS_FILE = path.join(__dirname, 'users.json');
-// fetch latest PDFs from the forum on startup
-syncPapers().catch(err => console.error('Failed to sync papers:', err));
 
 async function readLabFile() {
   try {
@@ -66,13 +63,11 @@ async function writeUsers(data) {
 
 app.get('/api/pastpapers', async (_req, res) => {
   try {
-    const files = await fs.promises.readdir(PAPERS_DIR);
-    const papers = files
-      .filter(f => f.toLowerCase().endsWith('.pdf'))
-      .map(f => ({
-        title: f.replace(/_/g, ' ').replace(/\.pdf$/i, ''),
-        url: `/papers/${encodeURIComponent(f)}`,
-      }));
+    const links = await fetchPdfLinks();
+    const papers = links.map(link => ({
+      title: path.basename(link).replace(/_/g, ' ').replace(/\.pdf$/i, ''),
+      url: link,
+    }));
     res.json(papers);
   } catch (err) {
     console.error(err);
@@ -122,6 +117,20 @@ app.post('/api/users', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to save user' });
+  }
+});
+
+app.post('/api/login', async (req, res) => {
+  try {
+    const users = await readUsers();
+    const user = users.find(u => u.univid === req.body.univid);
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid ID' });
+    }
+    res.json({ status: 'ok', user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to log in' });
   }
 });
 
