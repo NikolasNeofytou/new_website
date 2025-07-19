@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">SHMMy</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="pastpapers.html">Past Papers</a></li>
+                <li class="nav-item"><a class="nav-link" href="labpartners.html">Lab Partners</a></li>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="py-5" id="register">
+    <div class="container text-center">
+        <h2 class="mb-4">Login</h2>
+        <p>Sign in using your verified LinkedIn or IEEE membership.</p>
+        <button class="btn btn-primary me-2" onclick="location.href='/auth/linkedin'">Sign in with LinkedIn</button>
+        <button class="btn btn-secondary" onclick="location.href='/auth/ieee'">Sign in with IEEE</button>
+        <p class="mt-3">Don't have an account? <a href="signup.html">Sign up here</a>.</p>
+    </div>
+</section>
+
+<section class="py-5 text-center ad-banner" id="ads">
+    <div class="container">
+        <img src="https://via.placeholder.com/728x90?text=Advertisement" alt="Advertisement">
+    </div>
+</section>
+
+<footer class="py-4 bg-primary text-white text-center">
+    <div class="container">
+        <p class="mb-0">&copy; 2025 SHMMy Students</p>
+        <p class="mb-0">Created by <a href="https://example.com" class="text-white text-decoration-underline">Nikolas Neofytou</a></p>
+        <p class="mb-0">
+            <a href="https://github.com/nneof" class="text-white">GitHub</a> |
+            <a href="https://linkedin.com/in/nneof" class="text-white">LinkedIn</a> |
+            <a href="https://twitter.com/nneof" class="text-white">Twitter</a>
+        </p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
