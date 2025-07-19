@@ -6,7 +6,10 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const users = [];
+
 app.use(express.static(path.join(__dirname)));
+app.use(express.json());
 
 app.get('/api/announcements', async (_req, res) => {
   try {
@@ -27,6 +30,25 @@ app.get('/api/announcements', async (_req, res) => {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch announcements' });
   }
+});
+
+app.post('/api/users', (req, res) => {
+  const { univid, name } = req.body;
+
+  if (!univid) {
+    return res.status(400).json({ error: 'University ID (univid) is required' });
+  }
+
+  const existing = users.find(u => u.univid === univid);
+  if (existing) {
+    return res
+      .status(409)
+      .json({ error: 'A user with this university ID already exists.' });
+  }
+
+  const user = { univid, name };
+  users.push(user);
+  res.status(201).json(user);
 });
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
