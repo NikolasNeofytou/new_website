@@ -4,7 +4,8 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
-const { fetchPdfLinks } = require('./fetchPapers');
+const { run: fetchPapersRun } = require('./fetchPapers');
+const PAPERS_DIR = path.join(__dirname, 'papers');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,13 +19,19 @@ app.get('/api/announcements', async (_req, res) => {
     const html = await response.text();
     const $ = cheerio.load(html);
     const announcements = [];
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
     $('#announcementsTable tbody tr').each((_, row) => {
       const cols = $(row).find('td');
-      const date = $(cols[0]).text().trim();
-      const title = $(cols[1]).text().trim();
-      const category = $(cols[2]).text().trim();
-      const link = $(cols[1]).find('a').attr('href');
-      announcements.push({ date, title, category, link });
+      const dateText = $(cols[0]).text().trim();
+      const [d, m, y] = dateText.split(/[\/\-]/);
+      const jsDate = new Date(`${y}-${m}-${d}`);
+      if (jsDate >= oneMonthAgo) {
+        const title = $(cols[1]).text().trim();
+        const category = $(cols[2]).text().trim();
+        const link = $(cols[1]).find('a').attr('href');
+        announcements.push({ date: dateText, title, category, link });
+      }
     });
     res.json(announcements);
   } catch (err) {
@@ -64,10 +71,12 @@ async function writeUsers(data) {
 
 app.get('/api/pastpapers', async (_req, res) => {
   try {
-    const links = await fetchPdfLinks();
-    const papers = links.map(link => ({
-      title: path.basename(link).replace(/_/g, ' ').replace(/\.pdf$/i, ''),
-      url: link,
+    await fs.promises.mkdir(PAPERS_DIR, { recursive: true });
+    let files = await fs.promises.readdir(PAPERS_DIR);
+    files = files.filter(f => f.toLowerCase().endsWith('.pdf'));
+    const papers = files.map(f => ({
+      title: f.replace(/_/g, ' ').replace(/\.pdf$/i, ''),
+      url: '/papers/' + encodeURIComponent(f)
     }));
     res.json(papers);
   } catch (err) {
@@ -151,4 +160,11 @@ app.get('/auth/ieee', (_req, res) => {
 });
 
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, async () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+  try {
+    await fetchPapersRun();
+  } catch (err) {
+    console.error('Failed to sync past papers:', err.message);
+  }
+});
