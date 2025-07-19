@@ -7,7 +7,7 @@ This repository provides a small website modernizing the SHMMy forum experience.
 - Responsive layout built on Bootstrap 5
 - Dark mode toggle
 - Animated background for a lively feel
-- Live announcements from [ECE](https://www.ece.ntua.gr/gr/announcements) showing only the last month's posts
+- Live announcements from [ECE](https://www.ece.ntua.gr/gr/announcements) showing only the last month's posts in a responsive grid
 - Past papers served locally from PDFs downloaded from the HMMY forum
 - Login via LinkedIn/IEEE or your site profile with password security
 - Lab partners board for finding teammates
