@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHMMy Forum Enhanced</title>
+    <title>Announcements - SHMMy Forum Enhanced</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
 </head>
@@ -16,43 +16,26 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="announcements.html">Announcements</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://shmmy.ntua.gr/forum/">Forum</a></li>
-                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
                 <li class="nav-item" id="auth-li"><button id="auth-btn" class="btn btn-outline-light btn-sm">Sign In</button></li>
             </ul>
         </div>
     </div>
 </nav>
 
-<header class="py-5 text-center bg-light" id="hero">
+<header class="py-5 text-center bg-light">
     <div class="container">
-        <h1 class="display-4">Welcome to SHMMy</h1>
-        <p class="lead">An improved learning experience for Electrical and Computer Engineering students.</p>
-        <a class="btn btn-primary btn-lg" href="https://shmmy.ntua.gr/forum/" role="button">Visit the Forum</a>
+        <h1 class="display-4">Latest Announcements</h1>
+        <p class="lead">Updates from the past month</p>
     </div>
 </header>
 
-
-<section class="py-5 bg-light" id="contact">
+<section class="py-5" id="announcements">
     <div class="container">
-        <h2 class="mb-4">Contact Us</h2>
-        <form>
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" required>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" required>
-            </div>
-            <div class="mb-3">
-                <label for="message" class="form-label">Message</label>
-                <textarea class="form-control" id="message" rows="3" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        <div class="row" id="announcement-list"></div>
     </div>
 </section>
 

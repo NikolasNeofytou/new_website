@@ -1,6 +1,7 @@
 # SHMMy Forum Enhancements
 
 This repository provides a small website modernizing the SHMMy forum experience. It now includes a Node.js server that fetches live announcements from the School of Electrical and Computer Engineering.
+Announcements have their own page so the home page stays focused on the forum.
 
 ## Features
 
