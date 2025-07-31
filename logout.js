@@ -1,20 +1,25 @@
 function updateUserInfo() {
-    const logoutLi = document.getElementById('logout-li');
+    const btn = document.getElementById('auth-btn');
     const currentUser = localStorage.getItem('currentUser');
-    if (logoutLi) {
-        logoutLi.style.display = currentUser ? 'block' : 'none';
+    if (btn) {
+        btn.textContent = currentUser ? 'Logout' : 'Sign In';
     }
 }
 
-function logout() {
-    localStorage.removeItem('currentUser');
+function toggleAuth() {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+        localStorage.removeItem('currentUser');
+    } else {
+        localStorage.setItem('currentUser', 'demo');
+    }
     updateUserInfo();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('logout-btn');
+    const btn = document.getElementById('auth-btn');
     if (btn) {
-        btn.addEventListener('click', logout);
+        btn.addEventListener('click', toggleAuth);
     }
     updateUserInfo();
 });
