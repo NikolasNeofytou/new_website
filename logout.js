@@ -10,10 +10,10 @@ function toggleAuth() {
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
         localStorage.removeItem('currentUser');
+        updateUserInfo();
     } else {
-        localStorage.setItem('currentUser', 'demo');
+        window.location.href = 'signup.html';
     }
-    updateUserInfo();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
