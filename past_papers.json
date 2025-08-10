@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "courseCode": "ECE101",
+    "courseName": "Introduction to Programming",
+    "semester": 1,
+    "year": 2024,
+    "examSession": "June 2024",
+    "url": "https://example.com/past-papers/ECE101-2024-June.pdf",
+    "language": "EN"
+  },
+  {
+    "id": 2,
+    "courseCode": "ECE101",
+    "courseName": "Introduction to Programming",
+    "semester": 1,
+    "year": 2023,
+    "examSession": "February 2023",
+    "url": "https://example.com/past-papers/ECE101-2023-Feb.pdf",
+    "language": "EN"
+  },
+  {
+    "id": 3,
+    "courseCode": "ECE205",
+    "courseName": "Signals & Systems",
+    "semester": 3,
+    "year": 2024,
+    "examSession": "September 2024",
+    "url": "https://example.com/past-papers/ECE205-2024-Sep.pdf",
+    "language": "GR"
+  },
+  {
+    "id": 4,
+    "courseCode": "ECE330",
+    "courseName": "Computer Architecture",
+    "semester": 5,
+    "year": 2023,
+    "examSession": "June 2023",
+    "url": "https://example.com/past-papers/ECE330-2023-June.pdf",
+    "language": "EN"
+  }
+]

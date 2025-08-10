@@ -28,28 +28,47 @@
 
 <section class="py-5">
     <div class="container">
-        <h1 class="mb-4">Sign In</h1>
-        <form id="signup-form" class="mx-auto" style="max-width:400px;">
-            <div class="mb-3">
-                <label for="email" class="form-label">NTUA ECE Email</label>
-                <input type="email" class="form-control" id="email" required>
-            </div>
-            <div class="text-danger mb-3" id="signup-error"></div>
-            <button type="submit" class="btn btn-primary">Sign In</button>
-        </form>
+                                <h1 class="mb-4">Account Access</h1>
+                                <div class="mx-auto" style="max-width:460px;">
+                                    <ul class="nav nav-pills mb-3" id="modeTabs" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="login-tab" data-mode="login" type="button">Sign In</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="signup-tab" data-mode="signup" type="button">Sign Up</button>
+                                        </li>
+                                    </ul>
+                                    <form id="auth-form">
+                                            <div class="mb-3">
+                                                    <label for="email" class="form-label">NTUA ECE Email</label>
+                                                    <input type="email" class="form-control" id="email" required autocomplete="username">
+                                            </div>
+                                            <div class="mb-3">
+                                                    <label for="password" class="form-label">Password</label>
+                                                    <input type="password" class="form-control" id="password" required minlength="8" autocomplete="current-password">
+                                                    <div class="form-text" id="pw-help">Minimum 8 characters.</div>
+                                            </div>
+                                            <div class="text-danger mb-3" id="auth-error"></div>
+                                            <button type="submit" class="btn btn-primary w-100 mb-3" id="submit-btn">Sign In</button>
+                                            <div class="text-center text-muted mb-2">Or use institutional Single Sign-On</div>
+                                            <a href="/auth/sso/login" class="btn btn-outline-secondary w-100" id="sso-btn">Login with NTUA SSO</a>
+                                    </form>
+                                </div>
     </div>
 </section>
 
 <footer class="py-4 bg-primary text-white text-center">
     <div class="container">
-        <p class="mb-0">&copy; 2025 SHMMy Students</p>
-        <button id="theme-toggle" class="btn btn-outline-light ms-2">Toggle Dark Mode</button>
+    <p class="mb-0">&copy; 2025 SHMMy Students</p>
+    <button id="theme-toggle" class="btn btn-outline-light ms-2"><span class="icon" aria-hidden="true"><svg class="sun" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></g></svg><svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 14.5A8.38 8.38 0 0 1 9.5 3 7.5 7.5 0 1 0 21 14.5z"/></svg></span><span class="label">Theme</span></button>
+    <button id="contrast-toggle" class="btn btn-outline-light btn-sm ms-2">High Contrast</button>
     </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="script.js"></script>
+<script src="auth_client.js"></script>
 <script src="signup.js"></script>
-<script src="logout.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
 </body>
 </html>

@@ -6,6 +6,7 @@
     <title>SHMMy Forum Enhanced</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
+    <link rel="preload" href="icons/sprite.svg" as="image" type="image/svg+xml">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -18,53 +19,243 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="announcements.html">Announcements</a></li>
+                <li class="nav-item"><a class="nav-link" href="past_papers.html">Past Papers</a></li>
+                <li class="nav-item"><a class="nav-link" href="chatbot.html">Chatbot</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://shmmy.ntua.gr/forum/">Forum</a></li>
-                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                <li class="nav-item"><button class="nav-link btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#contactModal" type="button">Contact</button></li>
                 <li class="nav-item" id="auth-li"><button id="auth-btn" class="btn btn-outline-light btn-sm">Sign In</button></li>
             </ul>
         </div>
     </div>
 </nav>
 
-<header class="py-5 text-center bg-light" id="hero">
-    <div class="container">
-        <h1 class="display-4">Welcome to SHMMy</h1>
-        <p class="lead">An improved learning experience for Electrical and Computer Engineering students.</p>
-        <a class="btn btn-primary btn-lg" href="https://shmmy.ntua.gr/forum/" role="button">Visit the Forum</a>
+<header class="hero-gradient text-light" id="hero">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">      
+            <div class="col-lg-7">
+                <h1 class="display-4 fw-bold mb-3">Your ECE Learning Hub</h1>
+                <p class="lead mb-4">Search past papers, track your contributions, discuss courses, and stay updated — all in one place tailored for NTUA ECE students.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a class="btn btn-primary btn-lg" href="past_papers.html">Explore Past Papers</a>
+                    <a class="btn btn-outline-light btn-lg" href="profile.html">View Your Profile</a>
+                    <a class="btn btn-warning btn-lg" href="chatbot.html">Ask the Helper Bot</a>
+                </div>
+                <div class="mt-4 small opacity-75">Powered by community ratings, comments & offline-first tech.</div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card shadow-lg glassy">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Quick Actions</h5>
+                        <div class="list-group small">
+                            <a href="past_papers.html" class="list-group-item list-group-item-action">🔍 Find an Exam Paper</a>
+                            <a href="past_papers.html#filters" class="list-group-item list-group-item-action">📊 Filter by Semester & Year</a>
+                            <a href="profile.html" class="list-group-item list-group-item-action">🧾 Export My Activity</a>
+                            <a href="signup.html" class="list-group-item list-group-item-action">🔐 Sign In / Register</a>
+                            <a href="chatbot.html" class="list-group-item list-group-item-action">🤖 Chat with Helper Bot</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </header>
 
+<section class="py-5 bg-light border-bottom">
+ <div class="container">
+    <div class="row g-4">
+     <div class="col-md-3">
+         <div class="feature-tile h-100 p-4 rounded shadow-sm bg-white">
+             <h5 class="fw-semibold mb-2"><svg width="20" height="20" class="me-1"><use href="icons/sprite.svg#search"/></svg>Past Papers</h5>
+             <p class="small mb-3">Search, filter and rate historic exam papers to prepare smarter.</p>
+             <a href="past_papers.html" class="stretched-link">Browse &raquo;</a>
+         </div>
+     </div>
+     <div class="col-md-3">
+         <div class="feature-tile h-100 p-4 rounded shadow-sm bg-white">
+             <h5 class="fw-semibold mb-2"><svg width="20" height="20" class="me-1"><use href="icons/sprite.svg#insights"/></svg>Community Insights</h5>
+             <p class="small mb-3">See average difficulty ratings & moderated comments.</p>
+             <a href="past_papers.html" class="stretched-link">See insights &raquo;</a>
+         </div>
+     </div>
+     <div class="col-md-3">
+         <div class="feature-tile h-100 p-4 rounded shadow-sm bg-white">
+             <h5 class="fw-semibold mb-2"><svg width="20" height="20" class="me-1"><use href="icons/sprite.svg#profile"/></svg>Profile Dashboard</h5>
+             <p class="small mb-3">Track your ratings & comments; export or clean up data.</p>
+             <a href="profile.html" class="stretched-link">Open profile &raquo;</a>
+         </div>
+     </div>
+     <div class="col-md-3">
+         <div class="feature-tile h-100 p-4 rounded shadow-sm bg-white">
+             <h5 class="fw-semibold mb-2"><svg width="20" height="20" class="me-1"><use href="icons/sprite.svg#bot"/></svg>Helper Chatbot</h5>
+             <p class="small mb-3">Get instant guidance on navigation & features.</p>
+             <a href="chatbot.html" class="stretched-link">Chat now &raquo;</a>
+         </div>
+     </div>
+    </div>
+ </div>
+</section>
 
-<section class="py-5 bg-light" id="contact">
+<section class="py-5">
+ <div class="container">
+    <div class="row g-5 align-items-center">
+     <div class="col-lg-6">
+         <h2 class="fw-bold mb-3">Live Announcements</h2>
+         <p class="text-muted">Recent department announcements (last 30 days) pulled directly so you never miss deadlines.</p>
+         <div class="row" id="announcement-list"></div>
+         <div class="mt-3"><a class="btn btn-outline-primary btn-sm" href="announcements.html">View all announcements</a></div>
+     </div>
+     <div class="col-lg-6">
+         <div class="p-4 rounded shadow-sm bg-light h-100">
+             <h5 class="mb-3">Why contribute?</h5>
+             <ul class="small mb-4">
+                 <li>Improve study materials quality with ratings.</li>
+                 <li>Surface tricky topics through comments & votes.</li>
+                 <li>Help newcomers onboard faster.</li>
+                 <li>Build a revision trail you can export anytime.</li>
+             </ul>
+             <a href="signup.html" class="btn btn-primary">Join & Start Contributing</a>
+         </div>
+     </div>
+    </div>
+ </div>
+</section>
+
+<section class="py-5 bg-white border-top border-bottom">
     <div class="container">
-        <h2 class="mb-4">Contact Us</h2>
-        <form>
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" required>
+        <div class="row g-5">
+            <div class="col-lg-7">
+                <h2 class="fw-bold mb-3">Trending Papers</h2>
+                <p class="text-muted small">Most active or highly rated recently.</p>
+                <ul class="list-group mb-4" id="trending-list"></ul>
+                <a href="past_papers.html" class="btn btn-outline-primary btn-sm">Browse all past papers</a>
             </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" required>
+            <div class="col-lg-5">
+                <h2 class="fw-bold mb-3">Recent Activity</h2>
+                <p class="text-muted small">Fresh community comments.</p>
+                <div id="recent-activity" class="vstack gap-3"></div>
             </div>
-            <div class="mb-3">
-                <label for="message" class="form-label">Message</label>
-                <textarea class="form-control" id="message" rows="3" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        </div>
     </div>
 </section>
+
+<section class="stats-band py-5 text-light">
+ <div class="container">
+    <div class="row text-center g-4" id="live-stats">
+        <div class="col-md-3"><h3 class="mb-0" id="stat-papers">--</h3><small>Papers</small></div>
+        <div class="col-md-3"><h3 class="mb-0" id="stat-ratings">--</h3><small>Total Ratings</small></div>
+        <div class="col-md-3"><h3 class="mb-0" id="stat-comments">--</h3><small>Comments</small></div>
+        <div class="col-md-3"><h3 class="mb-0" id="stat-users">--</h3><small>Users</small></div>
+    </div>
+ </div>
+</section>
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Contact Us</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="contact-form">
+                    <div class="mb-3">
+                        <label class="form-label" for="c-name">Name</label>
+                        <input id="c-name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="c-email">Email</label>
+                        <input id="c-email" type="email" class="form-control" required>
+                    </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="c-msg">Message</label>
+                            <textarea id="c-msg" rows="4" class="form-control" required></textarea>
+                        </div>
+                        <div id="contact-status" class="small text-success d-none">Sent! (stub)</div>
+                        <button class="btn btn-primary w-100" type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <footer class="py-4 bg-primary text-white text-center">
     <div class="container">
         <p class="mb-0">&copy; 2025 SHMMy Students</p>
-        <button id="theme-toggle" class="btn btn-outline-light ms-2">Toggle Dark Mode</button>
+            <button id="theme-toggle" class="btn btn-outline-light ms-2"><span class="icon" aria-hidden="true"><svg class="sun" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></g></svg><svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 14.5A8.38 8.38 0 0 1 9.5 3 7.5 7.5 0 1 0 21 14.5z"/></svg></span><span class="label">Theme</span></button>
+            <button id="contrast-toggle" class="btn btn-outline-light btn-sm ms-2">High Contrast</button>
     </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="script.js"></script>
-<script src="logout.js"></script>
+<script>
+// lightweight stats fetch combining past-papers endpoint and meta JSON (public)
+fetch('past_papers.json').then(r=>r.json()).then(papers=>{
+    document.getElementById('stat-papers').textContent = papers.length;
+});
+fetch('past_papers_meta.json').then(r=>r.json()).then(meta=>{
+    let ratings=0, comments=0, users=new Set();
+    Object.values(meta).forEach(entry=>{
+        if(entry && entry.ratings){ Object.values(entry.ratings).forEach(c=> ratings += c||0); }
+        if(entry && entry.comments){ comments += entry.comments.length; entry.comments.forEach(c=> users.add(c.studentId)); }
+        if(entry && entry.studentRatings){ Object.keys(entry.studentRatings).forEach(u=> users.add(u)); }
+    });
+    document.getElementById('stat-ratings').textContent = ratings;
+    document.getElementById('stat-comments').textContent = comments;
+    document.getElementById('stat-users').textContent = users.size || '--';
+}).catch(()=>{});
+</script>
+<script>
+// Populate trending & recent activity (client-side heuristic)
+Promise.all([
+    fetch('past_papers.json').then(r=>r.json()).catch(()=>[]),
+    fetch('past_papers_meta.json').then(r=>r.json()).catch(()=>({}))
+]).then(([papers, meta])=>{
+    const trendingList = document.getElementById('trending-list');
+    const recentBox = document.getElementById('recent-activity');
+    if(trendingList){
+        const scored = papers.map(p=>{
+            const m = meta[p.id]||{}; const ratingSum = m.ratings? Object.entries(m.ratings).reduce((a,[k,v])=> a + (parseInt(k,10)*(v||0)),0):0;
+            const ratingCount = m.ratings? Object.values(m.ratings).reduce((a,b)=>a+(b||0),0):0;
+            const avg = ratingCount? (ratingSum/ratingCount):0;
+            const comments = (m.comments||[]).length;
+            const activityScore = ratingCount + comments*1.5 + avg; // simple heuristic
+            return { p, ratingCount, avg: avg.toFixed(2), comments, activityScore };
+        }).sort((a,b)=> b.activityScore - a.activityScore).slice(0,5);
+        scored.forEach(s=>{
+            const li=document.createElement('li');
+            li.className='list-group-item d-flex justify-content-between align-items-center';
+            li.innerHTML = `<span><strong>${s.p.courseCode}</strong> ${s.p.courseName} <span class="text-muted small">(${s.p.year})</span><br><span class="small text-muted">${s.ratingCount} ratings • ${s.comments} comments</span></span><span class="badge bg-primary rounded-pill">${s.avg}</span>`;
+            li.onclick=()=>{location.href='past_paper_view.html?id='+s.p.id};
+            trendingList.appendChild(li);
+        });
+    }
+    if(recentBox){
+        const recent=[];
+        Object.entries(meta).forEach(([pid,m])=>{ (m.comments||[]).slice(-5).forEach(c=> recent.push({pid, c})); });
+        recent.sort((a,b)=> b.c.ts - a.c.ts);
+        recent.slice(0,6).forEach(r=>{
+            const paper = papers.find(p=> String(p.id)===String(r.pid));
+            const div=document.createElement('div');
+            div.className='p-3 rounded border bg-white shadow-sm';
+            const date = new Date(r.c.ts).toLocaleDateString();
+            div.innerHTML=`<div class='small text-muted mb-1'>${paper? paper.courseCode: 'Paper '+r.pid} • ${date}</div><div class='small'>${r.c.text.replace(/</g,'&lt;')}</div>`;
+            div.onclick=()=>{location.href='past_paper_view.html?id='+r.pid+'#comment-'+r.c.id};
+            recentBox.appendChild(div);
+        });
+    }
+}).catch(()=>{});
+</script>
+<script>
+// Contact form stub (front-end only for now)
+document.addEventListener('DOMContentLoaded',()=>{
+    const cf=document.getElementById('contact-form');
+    if(cf){cf.addEventListener('submit',e=>{e.preventDefault();const s=document.getElementById('contact-status');s.classList.remove('d-none');setTimeout(()=>{s.classList.add('d-none');},2500);cf.reset();});}
+});
+</script>
+<script src="auth_client.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#274c9b" />
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});} </script>
 </body>
 </html>

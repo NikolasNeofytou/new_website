@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Past Exam Papers - SHMMy</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="index.html">SHMMy</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="announcements.html">Announcements</a></li>
+        <li class="nav-item"><a class="nav-link active" href="past_papers.html">Past Papers</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://shmmy.ntua.gr/forum/" target="_blank">Forum</a></li>
+    <li class="nav-item"><a class="nav-link" href="chatbot.html">Chatbot</a></li>
+        <li class="nav-item" id="auth-li"><button id="auth-btn" class="btn btn-outline-light btn-sm">Sign In</button></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<header class="py-5 text-center bg-light">
+  <div class="container">
+    <h1 class="display-5">Past Exam Papers</h1>
+    <p class="lead">Search by course, semester, or free text.</p>
+  </div>
+</header>
+
+<section class="py-4">
+  <div class="container">
+    <form id="search-form" class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <label for="course" class="form-label">Course Code / Name</label>
+        <input type="text" id="course" class="form-control" placeholder="e.g. ECE101 or programming" />
+      </div>
+      <div class="col-md-2">
+        <label for="semester" class="form-label">Semester</label>
+        <select id="semester" class="form-select">
+          <option value="">Any</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label for="year" class="form-label">Year</label>
+        <select id="year" class="form-select"><option value="">Any</option></select>
+      </div>
+      <div class="col-md-2">
+        <label for="sort" class="form-label">Sort</label>
+        <select id="sort" class="form-select">
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="rating">Highest Rated</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-fill">Search</button>
+        <button type="button" id="clear-filters" class="btn btn-outline-secondary flex-fill">Clear</button>
+      </div>
+    </form>
+
+    <div class="mt-4" id="results-info"></div>
+    <div class="row mt-3" id="papers-list"></div>
+  </div>
+</section>
+
+<footer class="py-4 bg-primary text-white text-center">
+  <div class="container">
+  <p class="mb-0">&copy; 2025 SHMMy Students</p>
+  <button id="theme-toggle" class="btn btn-outline-light ms-2"><span class="icon" aria-hidden="true"><svg class="sun" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></g></svg><svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 14.5A8.38 8.38 0 0 1 9.5 3 7.5 7.5 0 1 0 21 14.5z"/></svg></span><span class="label">Theme</span></button>
+  <button id="contrast-toggle" class="btn btn-outline-light btn-sm ms-2">High Contrast</button>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+<script src="past_papers.js"></script>
+<script src="auth_client.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});} </script>
+</body>
+</html>

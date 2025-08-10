@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Past Paper Viewer - SHMMy</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+  <style>
+    .rating-stars button { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+    .rating-stars button.dim { opacity: .3; }
+    .comment-box { max-height: 300px; overflow-y: auto; }
+    .pdf-frame { width: 100%; min-height: 70vh; border: 1px solid #ccc; border-radius: 6px; }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="index.html">SHMMy</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="announcements.html">Announcements</a></li>
+  <li class="nav-item"><a class="nav-link" href="past_papers.html">Past Papers</a></li>
+  <li class="nav-item"><a class="nav-link" href="chatbot.html">Chatbot</a></li>
+        <li class="nav-item" id="auth-li"><button id="auth-btn" class="btn btn-outline-light btn-sm">Sign In</button></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4" id="viewer-root">
+  <div id="paper-meta" class="mb-4">
+    <div class="skeleton mb-2" style="height:32px;width:60%"></div>
+    <div class="skeleton mb-2" style="height:16px;width:40%"></div>
+  </div>
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <iframe id="pdfFrame" class="pdf-frame" title="PDF viewer"></iframe>
+      <p class="small text-muted mt-2">If the PDF doesn't load, <a id="directLink" href="#" target="_blank">open directly</a>.</p>
+    </div>
+    <div class="col-lg-4">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Rate this paper</h5>
+          <div class="rating-stars mb-2" id="rating-stars"></div>
+          <div id="rating-summary" class="small text-muted mb-2"></div>
+          <div id="rating-breakdown" class="small"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body d-flex flex-column" style="height:400px;">
+          <h5 class="card-title">Comments</h5>
+          <div class="comment-box mb-2" id="comments"></div>
+          <form id="comment-form" class="mt-auto">
+            <div class="input-group">
+              <input type="text" id="comment-text" class="form-control" placeholder="Add a comment" maxlength="250" />
+              <button class="btn btn-primary" type="submit">Post</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="py-4 bg-primary text-white text-center mt-5">
+  <div class="container">
+  <p class="mb-0">&copy; 2025 SHMMy Students</p>
+  <button id="theme-toggle" class="btn btn-outline-light ms-2"><span class="icon" aria-hidden="true"><svg class="sun" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></g></svg><svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 14.5A8.38 8.38 0 0 1 9.5 3 7.5 7.5 0 1 0 21 14.5z"/></svg></span><span class="label">Theme</span></button>
+  <button id="contrast-toggle" class="btn btn-outline-light btn-sm ms-2">High Contrast</button>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+<script src="past_paper_view.js"></script>
+<script src="auth_client.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});} </script>
+</body>
+</html>
