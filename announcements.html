@@ -6,11 +6,17 @@
     <title>Announcements - SHMMy Forum Enhanced</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='none' stroke='%23274c9b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M16 3l11 4v8c0 7-4.5 10.5-11 14-6.5-3.5-11-7-11-14V7l11-4z M11 13l5 3 5-3 M16 16v5'/ %3E%3Ccircle cx='16' cy='10' r='2' fill='%23274c9b'/%3E%3C/svg%3E">
+        <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+        <link rel="icon" type="image/png" sizes="48x48" href="icons/icon-48.png">
+        <link rel="icon" type="image/png" sizes="64x64" href="icons/icon-64.png">
+        <link rel="apple-touch-icon" href="icons/icon-180.png">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<div class="visually-hidden" aria-live="polite" id="announcements-results-live"></div>
+<nav class="navbar navbar-expand-lg main-nav shadow-sm">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">SHMMy</a>
+    <a class="navbar-brand d-flex align-items-center" href="index.html"><svg width="28" height="28" class="me-2" aria-hidden="true"><use href="icons/sprite.svg#logo"/></svg><span class="fw-semibold">SHMMy</span></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -19,24 +25,42 @@
                 <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="announcements.html">Announcements</a></li>
                 <li class="nav-item"><a class="nav-link" href="past_papers.html">Past Papers</a></li>
-                <li class="nav-item"><a class="nav-link" href="chatbot.html">Chatbot</a></li>
-                <li class="nav-item"><a class="nav-link" href="https://shmmy.ntua.gr/forum/">Forum</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
                 <li class="nav-item" id="auth-li"><button id="auth-btn" class="btn btn-outline-light btn-sm">Sign In</button></li>
             </ul>
         </div>
     </div>
 </nav>
 
-<header class="py-5 text-center bg-light">
-    <div class="container">
-        <h1 class="display-4">Latest Announcements</h1>
-        <p class="lead">Updates from the past month</p>
+<header class="page-hero text-light compact">
+    <div class="container py-4">
+        <h1 class="display-5 fw-bold mb-3 d-flex align-items-center"><svg width="40" height="40" class="me-2"><use href="icons/sprite.svg#insights"/></svg>Latest Announcements</h1>
+        <p class="lead mb-4">Updates from the past month – stay focused, stay informed.</p>
+        <form id="ann-filter" class="row g-2" autocomplete="off">
+            <div class="col-sm-6 col-lg-4">
+                <input class="form-control" placeholder="Search title / category" id="ann-q">
+            </div>
+            <div class="col-sm-4 col-lg-3">
+                <select id="ann-cat" class="form-select">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+            <div class="col-sm-2 col-lg-2 d-grid">
+                <button class="btn btn-primary" type="submit">Filter</button>
+            </div>
+        </form>
     </div>
 </header>
 
-<section class="py-5" id="announcements">
+<section id="announcements">
     <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 mb-0">Results <span class="text-muted" id="ann-count"></span></h2>
+            <div class="btn-group btn-group-sm" role="group" aria-label="sort">
+                <button type="button" class="btn btn-outline-secondary" data-sort="date-desc">Newest</button>
+                <button type="button" class="btn btn-outline-secondary" data-sort="date-asc">Oldest</button>
+                <button type="button" class="btn btn-outline-secondary" data-sort="title">Title</button>
+            </div>
+        </div>
         <div class="row" id="announcement-list"></div>
     </div>
 </section>
@@ -51,6 +75,51 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="script.js"></script>
+<script>
+// Announcements enhancement (client side filtering + sorting)
+document.addEventListener('DOMContentLoaded',()=>{
+    const listEl=document.getElementById('announcement-list');
+    const qEl=document.getElementById('ann-q');
+    const catEl=document.getElementById('ann-cat');
+    const form=document.getElementById('ann-filter');
+    const countEl=document.getElementById('ann-count');
+    const sortBtns=[...document.querySelectorAll('[data-sort]')];
+    let data=[]; let currentSort='date-desc';
+    function render(){
+        if(!listEl) return; listEl.innerHTML='';
+        let filtered=data.slice();
+        const q=(qEl.value||'').toLowerCase();
+        const cat=catEl.value;
+        if(q){ filtered=filtered.filter(a=> a.title.toLowerCase().includes(q)||a.category.toLowerCase().includes(q)); }
+        if(cat){ filtered=filtered.filter(a=> a.category===cat); }
+        switch(currentSort){
+            case 'date-asc': filtered.sort((a,b)=> new Date(a.date)-new Date(b.date)); break;
+            case 'title': filtered.sort((a,b)=> a.title.localeCompare(b.title)); break;
+            default: filtered.sort((a,b)=> new Date(b.date)-new Date(a.date));
+        }
+    countEl.textContent = `(${filtered.length})`;
+    const live = document.getElementById('announcements-results-live');
+    if(live) live.textContent = `${filtered.length} announcement${filtered.length!==1?'s':''} shown`;
+        filtered.forEach(a=>{
+            const col=document.createElement('div'); col.className='col-md-6 col-lg-4';
+            col.innerHTML=`<div class="card h-100 mb-4"><div class="card-body d-flex flex-column">`
+                +`<div class='small text-muted mb-1 d-flex justify-content-between'><span>${a.date}</span><span>${a.category}</span></div>`
+                +`<h6 class='fw-semibold mb-2'>${a.title}</h6>`
+                +`<a class='mt-auto btn btn-sm btn-primary' target='_blank' href='${a.link}'>Open</a>`
+                +`</div></div>`;
+            listEl.appendChild(col);
+        });
+    }
+    fetch('/api/announcements').then(r=>r.json()).then(items=>{
+        data=items||[]; render();
+        // categories
+        const cats=[...new Set(data.map(a=>a.category).filter(Boolean))].sort();
+        cats.forEach(c=>{ const opt=document.createElement('option'); opt.value=c; opt.textContent=c; catEl.appendChild(opt); });
+    }).catch(()=>{ if(listEl) listEl.innerHTML='<p class="text-danger">Failed to load announcements.</p>'; });
+    form.addEventListener('submit',e=>{ e.preventDefault(); render(); });
+    sortBtns.forEach(btn=> btn.addEventListener('click',()=>{ currentSort=btn.dataset.sort; sortBtns.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render(); }));
+});
+</script>
 <script src="auth_client.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});} </script>

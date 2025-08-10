@@ -17,20 +17,25 @@ async function getCurrentUser(){
 }
 
 async function logout(){
-  await fetch('/auth/logout', { method:'POST', credentials:'include', headers: CSRF_TOKEN? {'X-CSRF-Token': CSRF_TOKEN}:{} });
-  location.reload();
+  try { await fetch('/auth/logout', { method:'POST', credentials:'include', headers: CSRF_TOKEN? {'X-CSRF-Token': CSRF_TOKEN}:{} }); } catch {}
+  location.href='index.html';
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('auth-btn');
-  if(btn){
-    getCurrentUser().then(async data => {
+  if(!btn) return;
+  // Default action (works even if network/auth check fails)
+  btn.onclick = () => { if(btn.textContent === 'Sign In') location.href = 'signup.html'; else logout(); };
+  // Attempt to detect existing session; on failure keep default behavior
+  getCurrentUser()
+    .then(data => {
       if(data){
-        btn.textContent='Logout'; btn.onclick = logout;
-        // Acquire fresh csrf by forcing a login ping? Provided on login/signup response.
-      } else { btn.textContent='Sign In'; btn.onclick = ()=> location.href='signup.html'; }
-    });
-  }
+        btn.textContent = 'Logout';
+      } else {
+        btn.textContent = 'Sign In';
+      }
+    })
+    .catch(()=> { btn.textContent = 'Sign In'; });
 });
 
 // Hook into signup/login form to capture csrf token

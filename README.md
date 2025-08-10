@@ -1,6 +1,6 @@
-# SHMMy Forum Enhancements
+# SHMMy Academic Platform
 
-Modernized academic helper site with announcements, past exam paper discovery, community quality signals, offline support, and a lightweight local sign-in.
+Modernized academic helper site with announcements, past exam paper discovery, community quality signals, offline support, secure session-based authentication (local + NTUA CAS SSO), and accessibility-first UI.
 
 ## Core Features
 
@@ -16,8 +16,8 @@ Modernized academic helper site with announcements, past exam paper discovery, c
 - Sorting (Newest / Oldest / Highest Rated)
 - Skeleton loaders for smoother perceived performance
 - Offline-first caching (service worker) for core assets + cached API fallback
-- Helper Chatbot (client-only) with persisted conversation history & clear history button
-- Simple local sign-in (email must end with `@ece.ntua.gr`) stored in `localStorage`
+- Secure local sign-in (email must end with `@ece.ntua.gr`) persisted via HTTP-only session cookie + CSRF token
+- NTUA CAS (login.ntua.gr) Single Sign-On flow with automatic session + CSRF provisioning
 - PWA manifest (installable) with icons
 
 ## Tech Stack
@@ -40,7 +40,6 @@ Modernized academic helper site with announcements, past exam paper discovery, c
 | `styles.css` | Theme, animations, dark mode, skeleton, cards |
 | `manifest.webmanifest` | PWA metadata (name, theme color, icons) |
 | `icons/` | PWA icons (192x192, 512x512 placeholders) |
-| `chatbot.html / chatbot.js` | Local helper chatbot w/ persisted history |
 
 ## Running Locally
 
@@ -50,20 +49,24 @@ node server.js
 # then open http://localhost:3000
 ```
 
-## Sign-In Model
+## Authentication Model
 
-Pure client-side localStorage token:
-```json
-{ "email": "user@ece.ntua.gr", "studentId": "ID123456" }
-```
-Sent to the server via custom header `X-Student-ID` by frontend scripts for rating/comment routes.
+The app now uses server-side sessions stored in SQLite (see `auth.js`). Flow:
+
+1. User signs up or logs in (`/auth/signup` or `/auth/login`).
+2. Server sets `sid` HTTP-only cookie + returns a per-session CSRF token.
+3. Frontend stores CSRF token in memory (not localStorage) and sends it as `X-CSRF-Token` for state-changing requests (POST/DELETE).
+4. CAS SSO path: user initiates `/auth/sso/login` (with optional `?redirect=/target`). After successful CAS validation at `/auth/sso/callback`, user is redirected to the original path with `#csrf=<token>` fragment which the client captures.
+5. Logout clears session and (optionally) can propagate to CAS with `/auth/sso/logout`.
+
+Old client-only `localStorage` identity has been removed. README and code updated accordingly.
 
 ## API Summary
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/announcements` | Recent announcements (last 30 days) |
-| GET | `/api/past-papers` | List with optional `course`, `semester`, `year` filters; returns rating summary and userValue |
+| GET | `/api/past-papers` | List with optional `course`, `semester`, `year` filters; returns rating summary, comment count, and userValue |
 | GET | `/api/past-papers/:id` | Single paper detail + rating breakdown + comments |
 | POST | `/api/past-papers/:id/rate` | Body `{ value:1-5 }` (requires header `X-Student-ID`) |
 | DELETE | `/api/past-papers/:id/rate` | Remove user rating |
@@ -82,9 +85,9 @@ Sent to the server via custom header `X-Student-ID` by frontend scripts for rati
 - Expand threshold easily in `server.js` (search for `reports >= 3`).
 
 ## Offline Caching
-- Network-first for `/api/past-papers*` then fallback to cache.
-- Cache-first for static assets with background fill.
-- To invalidate, bump `CACHE_NAME` in `sw.js`.
+- Versioned service worker (`sw.js`) with `CACHE_VERSION` bump for invalidation.
+- Network-first strategy for `/api/` endpoints; cache-first for static assets.
+- Auth and metadata endpoints intentionally excluded from cache.
 
 ## Data Persistence Caveat
 All community data stored in `past_papers_meta.json`. This is NOT concurrency-safe for production—multiple processes could clobber writes.
@@ -98,13 +101,15 @@ All community data stored in `past_papers_meta.json`. This is NOT concurrency-sa
 - Service worker enables offline usage of core screens; install prompt may appear on supported devices.
 
 ### Production Suggestions
-- Replace JSON file with SQLite / Postgres.
-- Add authentication & session tokens instead of trusting client header.
-- Add rate limiting & CSRF protection.
+- Harden session storage (rotate session IDs on privilege change, persistent session store cluster-ready).
+- Enforce HTTPS (set `NODE_ENV=production` and proxy headers; app trusts first proxy).
+- Implement long-term audit logging and abuse monitoring.
+- Add configurable comment/report thresholds & admin moderation UI.
 
 ## Development Tips
 - Kill/reset meta by deleting `past_papers_meta.json` (recreated automatically).
 - Modify seed data in `past_papers.json` then restart server to reload.
+- Force service worker update: bump `CACHE_VERSION` in `sw.js`.
 
 ## Roadmap Ideas
 - Admin dashboard: review reported comments, adjust thresholds.

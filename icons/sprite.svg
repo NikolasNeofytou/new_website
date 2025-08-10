@@ -35,4 +35,62 @@
   <symbol id="star" viewBox="0 0 24 24" fill="currentColor" stroke="none">
     <path d="M12 17.3l-5.562 3.278 1.5-6.222L3 9.922l6.375-.52L12 3.5l2.625 5.902 6.375.52-4.938 4.434 1.5 6.222z"/>
   </symbol>
+  <!-- Brand / Logo: stylized shield + circuit nodes -->
+  <symbol id="logo" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 3l11 4v8c0 7-4.5 10.5-11 14-6.5-3.5-11-7-11-14V7l11-4z"/>
+    <path d="M11 13l5 3 5-3"/>
+    <circle cx="16" cy="10" r="2"/>
+    <path d="M16 16v5"/>
+  </symbol>
+  <!-- Home -->
+  <symbol id="home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 11l9-8 9 8"/>
+    <path d="M5 13v8h14v-8"/>
+  </symbol>
+  <!-- Announcements / megaphone -->
+  <symbol id="announcements" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 11v2a3 3 0 0 0 3 3h2"/>
+    <path d="M14 5v14"/>
+    <path d="M14 6a9 9 0 0 1 7 4.5 9 9 0 0 1-7 4.5H6a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3h8z"/>
+  </symbol>
+  <!-- Papers / document -->
+  <symbol id="papers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="3" width="12" height="18" rx="2"/>
+    <path d="M9 8h6M9 12h6M9 16h3"/>
+  </symbol>
+  <!-- Chatbot / message (alternate) -->
+  <symbol id="chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 11.5a8.5 8.5 0 0 1-11.444 7.94L5 21l1.56-3.11A8.5 8.5 0 1 1 21 11.5z"/>
+    <path d="M8 11h.01M12 11h.01M16 11h.01"/>
+  </symbol>
+  <!-- Login -->
+  <symbol id="login" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 7V5a2 2 0 0 1 2-2h8v18h-8a2 2 0 0 1-2-2v-2"/>
+    <path d="M3 12h13"/>
+    <path d="M6 9l-3 3 3 3"/>
+  </symbol>
+  <!-- Logout -->
+  <symbol id="logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 7V5a2 2 0 0 0-2-2H5v18h8a2 2 0 0 0 2-2v-2"/>
+    <path d="M21 12H8"/>
+    <path d="M18 9l3 3-3 3"/>
+  </symbol>
+  <!-- Filter -->
+  <symbol id="filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 4h16l-6 8v6l-4 2v-8L4 4z"/>
+  </symbol>
+  <!-- Rating (star outline) -->
+  <symbol id="star-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 17.3l6.18 3.64-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.67L5.82 21z"/>
+  </symbol>
+  <!-- Comment -->
+  <symbol id="comment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 13a8 8 0 0 1-11.444 7.94L5 21l1.11-2.22A8 8 0 1 1 21 13z"/>
+  </symbol>
+  <!-- Download / export paper -->
+  <symbol id="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3v14"/>
+    <path d="M6 11l6 6 6-6"/>
+    <path d="M5 21h14"/>
+  </symbol>
 </svg>

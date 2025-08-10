@@ -16,6 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(()=>{ window.location.href = 'index.html'; }, 300);
     }
 
+    // If arriving with ?redirect=/some/page store it for CAS button to use
+    const params = new URLSearchParams(location.search);
+    const redirectTarget = params.get('redirect') && params.get('redirect').startsWith('/') ? params.get('redirect') : '/index.html';
+    const ssoBtn = document.getElementById('sso-btn');
+    if(ssoBtn){
+        ssoBtn.addEventListener('click', (e)=>{
+            e.preventDefault();
+            window.location.href = `/auth/sso/login?redirect=${encodeURIComponent(redirectTarget)}`;
+        });
+    }
+
     tabs.forEach(btn=>{
         btn.addEventListener('click', ()=>{
             tabs.forEach(b=>b.classList.remove('active'));

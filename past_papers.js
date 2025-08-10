@@ -5,6 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const yearSelect = document.getElementById('year');
   const clearBtn = document.getElementById('clear-filters');
   const sortSelect = document.getElementById('sort');
+  const minRatingSelect = document.getElementById('difficulty');
+  const onlyHigh = document.getElementById('show-high-rated');
+  const hideNoComments = document.getElementById('hide-low-comments');
+  const activeFiltersBox = document.getElementById('active-filters');
+  let lastData = [];
 
   function getUser() {
     try { return JSON.parse(localStorage.getItem('currentUser')||'null'); } catch { return null; }
@@ -25,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
       // populate years if first time
       populateYears(data);
-      render(sortData(data));
+      lastData = data.slice();
+      applyAndRender();
     } catch (e) {
       list.innerHTML = '<p class="text-danger">Failed to load past papers.</p>';
     }
@@ -52,8 +58,47 @@ document.addEventListener('DOMContentLoaded', () => {
     return arr;
   }
 
+  function applyFilters(items){
+    let filtered = items.slice();
+    const minR = parseInt(minRatingSelect?.value||'',10);
+    if(!isNaN(minR)) filtered = filtered.filter(p=> (p.averageRating||0) >= minR);
+    if(onlyHigh?.checked) filtered = filtered.filter(p=> (p.averageRating||0) >= 4);
+  if(hideNoComments?.checked) filtered = filtered.filter(p=> (p.commentCount||0) > 0);
+    return filtered;
+  }
+
+  function renderActiveFilters(){
+    if(!activeFiltersBox) return;
+    activeFiltersBox.innerHTML='';
+    const chips=[];
+    const course = document.getElementById('course').value.trim(); if(course) chips.push(['Course',course,()=>{document.getElementById('course').value=''; form.dispatchEvent(new Event('submit'));}]);
+    const sem = document.getElementById('semester').value; if(sem) chips.push(['Semester',sem,()=>{document.getElementById('semester').value=''; form.dispatchEvent(new Event('submit'));}]);
+    const year = document.getElementById('year').value; if(year) chips.push(['Year',year,()=>{document.getElementById('year').value=''; form.dispatchEvent(new Event('submit'));}]);
+    const minR = minRatingSelect.value; if(minR) chips.push(['Min★',minR+'+',()=>{minRatingSelect.value=''; applyAndRender();}]);
+    if(onlyHigh.checked) chips.push(['Only≥4★','Yes',()=>{onlyHigh.checked=false; applyAndRender();}]);
+    if(hideNoComments.checked) chips.push(['HideNoComments','On',()=>{hideNoComments.checked=false; applyAndRender();}]);
+    chips.forEach(([label,val,close])=>{
+      const b=document.createElement('button');
+      b.type='button';
+      b.className='btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center gap-1';
+      b.innerHTML=`<span>${label}: ${val}</span><span aria-hidden='true'>&times;</span>`;
+      b.addEventListener('click',close);
+      activeFiltersBox.appendChild(b);
+    });
+    if(!chips.length) activeFiltersBox.innerHTML='<span class="text-muted small">None</span>';
+  }
+
+  function applyAndRender(){
+    const filtered = applyFilters(lastData);
+    const sorted = sortData(filtered);
+    render(sorted);
+    renderActiveFilters();
+  }
+
   function render(items) {
     info.textContent = `${items.length} result${items.length !== 1 ? 's' : ''} found.`;
+  const live = document.getElementById('papers-results-live');
+  if(live) live.textContent = info.textContent;
     if (!items.length) {
       list.innerHTML = '<p>No past papers match your search.</p>';
       return;
@@ -115,16 +160,16 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('semester').value='';
       document.getElementById('year').value='';
       sortSelect.value='newest';
+      minRatingSelect.value='';
+      onlyHigh.checked=false; hideNoComments.checked=false;
       loadPapers({});
     });
   }
 
-  if (sortSelect) {
-    sortSelect.addEventListener('change', () => {
-      // re-render using cached list by refetching with same filters (simpler)
-      form.dispatchEvent(new Event('submit'));
-    });
-  }
+  [sortSelect,minRatingSelect,onlyHigh,hideNoComments].forEach(el=>{
+    if(!el) return;
+    el.addEventListener('change', ()=>{ applyAndRender(); });
+  });
 
   // initial load
   loadPapers();

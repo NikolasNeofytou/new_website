@@ -6,8 +6,12 @@ const fs = require('fs');
 
 const cookie = require('cookie');
 const { createUser, authenticate, createSession, getSession, getUserById, invalidateSession, validateCsrf, findOrCreateSsoUser } = require('./auth');
+// Optional xml2js for safer CAS parsing (fallback to regex if not installed)
+let parseStringPromise = null; try { ({ parseStringPromise } = require('xml2js')); } catch { /* optional */ }
 
 const app = express();
+// Trust first proxy for correct proto (needed behind reverse proxy for secure cookies)
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 const META_FILE = path.join(__dirname, 'past_papers_meta.json');
 
@@ -64,6 +68,22 @@ app.use(async (req,res,next)=>{
 function requireAuth(req,res,next){ if(!req.user) return res.status(401).json({ error: 'Auth required'}); next(); }
 
 // AUTH ROUTES
+// Global diagnostic for unexpected errors
+process.on('unhandledRejection', (reason,p)=>{ console.error('UnhandledRejection:', reason); });
+process.on('uncaughtException', err=>{ console.error('UncaughtException:', err); });
+
+// Helper: safe base64 url encode/decode (avoid relying on Node version's base64url variant)
+function encodeState(obj){
+  try { return Buffer.from(JSON.stringify(obj)).toString('base64').replace(/=+$/,'').replace(/\+/g,'-').replace(/\//g,'_'); } catch { return ''; }
+}
+function decodeState(str){
+  if(!str || typeof str !== 'string') return null;
+  try {
+    const pad = str.length % 4 === 2 ? '==' : str.length % 4 === 3 ? '=' : '';
+    const b64 = str.replace(/-/g,'+').replace(/_/g,'/') + pad;
+    return JSON.parse(Buffer.from(b64,'base64').toString('utf8'));
+  } catch { return null; }
+}
 app.post('/auth/signup', async (req,res)=>{
   const { email, password } = req.body || {};
   if(!email || !password) return res.status(400).json({ error: 'Email and password required' });
@@ -106,16 +126,19 @@ app.get('/auth/me', (req,res)=>{
 
 // CAS SSO endpoints (stub integration) - user chooses institutional login
 // Initiates CAS login by redirecting to CAS server with service callback
-app.get('/auth/sso/login', (req,res)=>{
-  const service = encodeURIComponent(`${req.protocol}://${req.get('host')}/auth/sso/callback`);
-  // NTUA CAS base placeholder (replace with actual login.ntua.gr CAS URL if different)
+app.get(['/auth/sso/login','/auth/sso/login/'], (req,res)=>{
+  const redirect = req.query.redirect && typeof req.query.redirect === 'string' && req.query.redirect.startsWith('/') ? req.query.redirect : '/index.html';
+  const state = encodeState({ r: redirect });
+  const callbackUrl = `${req.protocol}://${req.get('host')}/auth/sso/callback?state=${state}`;
+  const service = encodeURIComponent(callbackUrl);
   const casBase = process.env.CAS_BASE || 'https://login.ntua.gr/cas';
-  return res.redirect(`${casBase}/login?service=${service}`);
+  console.log('[SSO] Initiating CAS login', { redirect, callbackUrl });
+  res.redirect(`${casBase}/login?service=${service}`);
 });
 
 // CAS callback: validate ticket, extract user principal -> email
 app.get('/auth/sso/callback', async (req,res)=>{
-  const { ticket } = req.query;
+  const { ticket, state } = req.query;
   if(!ticket) return res.status(400).send('Missing ticket');
   try {
     const casBase = process.env.CAS_BASE || 'https://login.ntua.gr/cas';
@@ -123,10 +146,23 @@ app.get('/auth/sso/callback', async (req,res)=>{
     const validateUrl = `${casBase}/serviceValidate?service=${encodeURIComponent(serviceUrl)}&ticket=${encodeURIComponent(ticket)}`;
     const r = await fetch(validateUrl);
     const txt = await r.text();
-    // Very lightweight XML pattern parse for <cas:user>username</cas:user>
-    const userMatch = txt.match(/<cas:user>([^<]+)<\/cas:user>/);
-    if(!userMatch) return res.status(401).send('CAS validation failed');
-    const username = userMatch[1];
+    let username = null;
+    if(parseStringPromise){
+      try {
+        const parsed = await parseStringPromise(txt);
+        // Typical CAS XML: serviceResponse.authenticationSuccess.user[0]
+        username = parsed?.['cas:serviceResponse']?.['cas:authenticationSuccess']?.[0]?.['cas:user']?.[0]
+          || parsed?.serviceResponse?.authenticationSuccess?.[0]?.user?.[0];
+      } catch { /* ignore XML parse error fallback to regex */ }
+    }
+    if(!username){
+      const userMatch = txt.match(/<cas:user>([^<]+)<\/cas:user>/);
+      if(userMatch) username = userMatch[1];
+    }
+    if(!username) {
+      console.warn('CAS validation failed response snippet:', txt.slice(0,400));
+      return res.status(401).send('CAS validation failed');
+    }
     // Build institutional email (assuming username@ece.ntua.gr)
     const email = `${username}@ece.ntua.gr`.toLowerCase();
     if(!/^[^@]+@ece\.ntua\.gr$/.test(email)) return res.status(403).send('Not an ECE account');
@@ -136,11 +172,39 @@ app.get('/auth/sso/callback', async (req,res)=>{
     const sameSite = secure ? 'Strict' : 'Lax';
     res.setHeader('Set-Cookie', cookie.serialize('sid', sid, { httpOnly:true, sameSite, path:'/', maxAge:60*60*24*7, secure }));
     // Redirect back to homepage with CSRF token as fragment (JS will pick and store)
-    res.redirect(`/index.html#csrf=${csrf}`);
+    let redirectPath = '/index.html';
+    if(state){
+      const parsed = decodeState(state);
+      if(parsed && typeof parsed.r === 'string' && parsed.r.startsWith('/')) redirectPath = parsed.r;
+    }
+    // Append csrf token as fragment so client can store it
+    res.redirect(`${redirectPath}#csrf=${csrf}`);
   } catch(e){
     console.error('CAS SSO error', e);
     res.status(500).send('SSO error');
   }
+});
+
+// CAS global logout convenience (ends local session then optionally redirect to CAS logout)
+app.get('/auth/sso/logout', (req,res)=>{
+  const header = req.headers.cookie;
+  if(header){ const parsed = cookie.parse(header); if(parsed.sid) invalidateSession(parsed.sid); }
+  res.setHeader('Set-Cookie', cookie.serialize('sid','',{ path:'/', maxAge:0 }));
+  const casBase = process.env.CAS_BASE || 'https://login.ntua.gr/cas';
+  const service = encodeURIComponent(`${req.protocol}://${req.get('host')}/index.html`);
+  return res.redirect(`${casBase}/logout?service=${service}`);
+});
+
+// Diagnostic route for SSO (shows if session + csrf token present) - disable in production if desired
+app.get('/auth/debug', (req,res)=>{
+  res.json({ hasSession: !!req.userSession, user: req.user||null });
+});
+
+// Route diagnostics (development only) - lists registered GET paths
+app.get('/__routes', (req,res)=>{
+  const routes = [];
+  app._router.stack.forEach(l=>{ if(l.route && l.route.path){ routes.push({ path: l.route.path, methods: Object.keys(l.route.methods) }); } });
+  res.json(routes);
 });
 
 // CSRF middleware for state-changing JSON POST/DELETE
@@ -168,6 +232,23 @@ function loadMeta() {
     if (fs.existsSync(META_FILE)) {
       const raw = fs.readFileSync(META_FILE, 'utf8');
       meta = JSON.parse(raw || '{}');
+      // Normalize legacy entries to ensure required sub-objects exist
+      Object.entries(meta).forEach(([pid, entry]) => {
+        if(!entry || typeof entry !== 'object') { meta[pid] = { ratings:{}, comments:[], studentRatings:{}, lastCommentTs:{}, commentVotes:{} }; return; }
+        entry.ratings = entry.ratings || {};
+        entry.comments = Array.isArray(entry.comments) ? entry.comments : [];
+        entry.studentRatings = entry.studentRatings || {};
+        entry.lastCommentTs = entry.lastCommentTs || {};
+        entry.commentVotes = entry.commentVotes || {};
+        // Ensure each comment has id/text/ts and studentId (nullable)
+        entry.comments = entry.comments.map(c => ({
+          id: c.id || Date.now().toString(36),
+            text: typeof c.text === 'string' ? c.text : '',
+            ts: c.ts || Date.now(),
+            studentId: c.studentId || null,
+            reports: c.reports || 0
+        })).slice(-200);
+      });
     }
   } catch (e) {
     console.warn('Failed to read meta file, starting empty', e.message);
@@ -190,6 +271,11 @@ function computeRatingStats(entry) {
   Object.entries(breakdown).forEach(([k,v]) => { const star = parseInt(k,10); const c = parseInt(v,10)||0; total += c; sum += star * c; });
   const average = total ? +(sum / total).toFixed(2) : 0;
   return { average, count: total, breakdown };
+}
+
+function computeCommentCount(entry){
+  if(!entry || !Array.isArray(entry.comments)) return 0;
+  return entry.comments.length; // hidden logic applied client-side; we count all stored comments
 }
 
 app.get('/api/announcements', async (_req, res) => {
@@ -245,7 +331,8 @@ app.get('/api/past-papers', (req, res) => {
     const entry = meta[p.id];
     const stats = computeRatingStats(entry);
     const userValue = studentId && entry && entry.studentRatings ? entry.studentRatings[studentId] : undefined;
-    return { ...p, averageRating: stats.average, ratingCount: stats.count, userValue };
+  const commentCount = computeCommentCount(entry);
+  return { ...p, averageRating: stats.average, ratingCount: stats.count, commentCount, userValue };
   });
   res.json(augmented);
 });
@@ -260,7 +347,8 @@ app.get('/api/past-papers/:id', (req, res) => {
   const stats = computeRatingStats(entry);
   const comments = (entry?.comments || []).slice(-100).map(c => withCommentScore(c, entry));
   const userValue = studentId && entry && entry.studentRatings ? entry.studentRatings[studentId] : undefined;
-  res.json({ ...paper, rating: stats, comments, userValue });
+  const commentCount = computeCommentCount(entry);
+  res.json({ ...paper, rating: stats, comments, commentCount, userValue });
 });
 
 // POST rate { value: 1-5 }
