@@ -75,9 +75,8 @@ app.post('/api/contact', (req, res) => {
     return res.status(400).json({ error: 'Name, email, and message are required' });
   }
 
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  // Basic email validation to prevent ReDoS - just check for @ and .
+  if (!email.includes('@') || !email.includes('.') || email.indexOf('@') > email.lastIndexOf('.')) {
     return res.status(400).json({ error: 'Invalid email format' });
   }
 
