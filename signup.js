@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem('currentUser', JSON.stringify(data));
         window.location.href = '/';
         return;
       }
