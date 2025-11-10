@@ -1,6 +1,15 @@
 function updateUserInfo() {
+    const loginLi = document.getElementById('login-li');
+    const profileLi = document.getElementById('profile-li');
     const logoutLi = document.getElementById('logout-li');
     const currentUser = localStorage.getItem('currentUser');
+    
+    if (loginLi) {
+        loginLi.style.display = currentUser ? 'none' : 'block';
+    }
+    if (profileLi) {
+        profileLi.style.display = currentUser ? 'block' : 'none';
+    }
     if (logoutLi) {
         logoutLi.style.display = currentUser ? 'block' : 'none';
     }
@@ -8,7 +17,7 @@ function updateUserInfo() {
 
 function logout() {
     localStorage.removeItem('currentUser');
-    updateUserInfo();
+    window.location.href = '/';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

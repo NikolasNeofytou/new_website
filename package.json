@@ -1,18 +1,38 @@
 {
   "name": "new_website",
-  "version": "1.0.0",
-  "description": "This repository provides a simple static website modernizing the SHMMy forum experience. It uses Bootstrap for responsive design and a small script for dark mode.",
-  "main": "script.js",
+  "version": "2.0.0",
+  "description": "Modern web platform for SHMMy Forum Enhancement with full production features including database, authentication, and security.",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "start:prod": "NODE_ENV=production node server-production.js",
+    "dev": "NODE_ENV=development nodemon server-production.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "shmmy",
+    "forum",
+    "education",
+    "ntua",
+    "ece"
+  ],
+  "author": "SHMMy Students",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cheerio": "^1.1.0",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "node-fetch": "^2.7.0"
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.3",
+    "morgan": "^1.10.1",
+    "node-fetch": "^2.7.0",
+    "winston": "^3.18.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
